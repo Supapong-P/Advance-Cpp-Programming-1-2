@@ -5,26 +5,41 @@
 int main() {
     int pos;
     std::ifstream file("subject.txt");
-    if (!file) {
-        std::cerr << "Error: could not open subject.txt\n";
+    
+    // Check if file opened successfully
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open subject.txt" << std::endl;
         return 1;
     }
-
+    
     std::string line;
     while (std::getline(file, line)) {
-        std::cout << line << '\n';
-        // transform line to lowercase for case-insensitive search
+        std::cout << line << std::endl;
+    // transfrom to lower case for case insensitive search
         std::string lowerLine = line;
-        for (char &c : line) {  
+        for (char& c : lowerLine) {
             c = std::tolower(c);
         }
-        pos = line.find("love");
-        if (pos <= line.length()) {
-            std::cout << "'love' found at position: " << pos << '\n';
+
+        pos = lowerLine.find("love");
+        if (pos >= line.length()) {
+            std::cout << "'love' not found in the line." << std::endl;
         } else {
-            std::cout << "'love' not found\n";
+            std::cout << "'love' found at position: " << pos << std::endl;
+        }
+
+        // tokennize the line into words
+        size_t start = 0;       
+        size_t end = line.find(' ');
+        bool found = false;
+        while (end != std::string::npos) {
+            std::string word = line.substr(start, end - start);
+            start = end + 1;
+            end = lowerLine.find(' ', start);
+            std::cout << "Token: " << word << std::endl;
         }
     }
-
+    
+    file.close();
     return 0;
 }
